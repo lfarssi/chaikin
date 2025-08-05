@@ -1,11 +1,14 @@
 use macroquad::prelude::*;
-
+use chaikin::chaikin_algo;
 #[macroquad::main("Chaikin")]
 async fn main() {
     let mut points: Vec<(f32, f32)> = Vec::new();
+    let mut points_algo: Vec<(f32, f32)> = Vec::new();
     // let mut first_point: Option<(f32, f32)> = None;
     // let mut second_point: Option<(f32, f32)> = None;
     let mut entered = false;
+    let mut count = 0;
+    let mut is_curved = false;
     loop {
         clear_background(BLACK);
         if !entered{
@@ -33,21 +36,18 @@ async fn main() {
             entered = true;
         }
         if entered{
-            let mut is_curved = false;
             while !is_curved{
-                let (start_x, start_y) = points[0];
-                let (end_x,end_y) = points[points.len()-1];
-
-                draw_line(start_x, start_y, points[1].0, points[1].1, 2.0, RED);
-                if points.len()>3{
-                    for i in 1..points.len() - 2 {
-                        let (x1, y1) = points[i];
-                        let (x2, y2) = points[i + 1];
-                        draw_line(x1, y1, x2, y2, 2.0, RED);
-                    }
+                for i in 0..points.len() - 1 {
+                    let (x1, y1) = points[i];
+                    let (x2, y2) = points[i + 1];
+                    draw_line(x1,y1,x2,y2,1.0, RED);
                 }
-                draw_line(points[points.len()-2].0, points[points.len()-2].1, end_x, end_y, 2.0, RED);
-                is_curved= true
+
+               points_algo = chaikin_algo(points);
+               count+=1;
+               if count ==6{
+                   is_curved= true
+               }
             }
             if is_key_pressed(KeyCode::Delete){
                 points.clear();
