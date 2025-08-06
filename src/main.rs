@@ -7,11 +7,23 @@ async fn main() {
     let mut last_time = get_time();
     let mut current_step = 0;   
     let mut entered = false;
-    let mut is_curved = false;
+    let mut less_than_one_point=false;
+    // let mut grabbed_point :<Option<usize>> = None;
+    // let mut grab = false;
     loop {
         clear_background(BLACK);
+        draw_text("-> Click Enter to start chaikin",20.0,20.0,20.0,GREEN);
+        draw_text("-> Left Click on your mouse to draw point",20.0,40.0,20.0,GREEN);
+        draw_text("-> to draw line you need 2 points and to start the algo you need 3 or more points",20.0,60.0,20.0,GREEN);
+        draw_text("-> to quit click on Escape",20.0,80.0,20.0,GREEN);
+        draw_text("-> to draw new points click on delete",20.0,100.0,20.0,GREEN);
         if !entered{
             if is_mouse_button_pressed(MouseButton::Left) {
+            //     for point in points{
+            //         if point.0 == mouse_position().0 && point.1 ==mouse_position().1{
+            //             grab=true;
+            //         }
+            //     }
                 let (mx, my) = mouse_position();
                 points.push((mx, my));
             }
@@ -26,15 +38,27 @@ async fn main() {
             break;
         }
         if is_key_pressed(KeyCode::Enter) {
-            entered = true;
-            steps.clear();
-            let mut points_algo =points.clone();
-            for _ in 0..7{
-                steps.push(points_algo.clone());
-                points_algo = chaikin_algo(points_algo);
+            if points.len()>0{
+                entered = true;
+                steps.clear();
+                let mut points_algo =points.clone();
+                for _ in 0..7{
+                    steps.push(points_algo.clone());
+                    points_algo = chaikin_algo(points_algo);
+                }
+                last_time = get_time();
+                current_step = 0;
+            } else{
+                less_than_one_point=true;
+                
             }
-            last_time = get_time();
-            current_step = 0;
+        }
+        if points.len()>0{
+            less_than_one_point=false;
+
+        }
+        if less_than_one_point{
+            draw_text("please click on the screen to draw a point first",20.0,screen_height()-20.0,20.0,RED);
         }
         if entered && !steps.is_empty(){
                 if get_time() - last_time > 0.5{
@@ -52,7 +76,7 @@ async fn main() {
                 }
                 
             
-            }
+        }
         if is_key_pressed(KeyCode::Delete){
             points.clear();
             entered=false;

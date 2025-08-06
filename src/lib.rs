@@ -4,8 +4,8 @@ pub fn chaikin_algo(points:Vec<(f32,f32)>)->Vec<(f32,f32)>{
     let (end_x,end_y) = points[points.len()-1];
 
     new_points.push((start_x,start_y));
-    if points.len()>3{
-        for i in 0..points.len() - 1 {
+    if points.len()>=3{
+        for i in 0..points.len() -  1{
             let (x1, y1) = points[i];
             let (x2, y2) = points[i + 1];
             let qx=0.75*x1+0.25*x2;
